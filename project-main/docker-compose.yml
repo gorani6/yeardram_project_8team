@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+    flask:
+        container_name: flask
+        build: 
+            context: ./flask
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        environment:
+            - APP_NAME=YearDreamProj
+        env_file:
+            - .env
+        expose:
+            - 5000
+        volumes:
+            - ./app:/flask/app
+        depends_on:
+            - mysql 
+
+    nginx:
+        container_name: nginx
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        ports:
+            - "80:80"
+        depends_on:
+            - flask    
+
+    mysql:
+        container_name: mysql
+        image: mysql:8
+        restart: unless-stopped
+        environment:
+            MYSQL_USER: "${DB_USER}"
+            MYSQL_PASSWORD: "${DB_PW}"
+            MYSQL_DATABASE: "${DB_NAME}"
+            MYSQL_ROOT_PASSWORD: "${DB_ROOT_PW}"
+        ports:
+            - "3306:3306"
+        command: [
+            '--character-set-server=utf8',
+            '--skip-character-set-client-handshake',
+            '--collation-server=utf8_bin',
+        ]
+        volumes:  
+            - mysqldata:/var/lib/mysql
+
+    adminer:
+        container_name: adminer
+        image: adminer
+        restart: unless-stopped
+        ports:
+            - "8080:8080"
+        depends_on:
+            - mysql
+
+volumes:
+    mysqldata:

@@ -1,0 +1,20 @@
+<h1> corona data table </h1>
+    
+    <form action='/corona' method="post" align="center">
+        기간 옵션을 선택<br>
+        <input type='radio' name='period' value='daily'>daily
+        <input type='radio' name='period' value='weekly'>weekly
+        <input type='radio' name='period' value='monthly'>monthly
+        <input type='submit'>
+    </form>
+
+    <table border="1" bordercolor="blue" width="400" align="center">
+        <th> 날짜 </th>
+        <th> 확진자 수 </th>
+        {% for date, cnt in res %}
+            <tr>
+                <td align="center"> {{ date }} </td>
+                <td align="center" style="font-weight:bold"> {{ cnt }} </td>
+            </tr>
+        {% endfor %}
+    </table>
